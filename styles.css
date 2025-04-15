@@ -90,6 +90,25 @@ button {
 		cursor: pointer;
 	}
 
+#loader {
+	text-align: center;
+	margin-top: 10px;
+	color: #ffb400;
+	font-weight: bold;
+	animation: blink 1s infinite;
+}
+
+@keyframes blink {
+	0%, 100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+}
+
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -112,3 +131,4 @@ button {
 		font-size: 0.9rem;
 	}
 }
+

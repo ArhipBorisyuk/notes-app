@@ -61,6 +61,9 @@ function loadNotes() {
 }
 
 document.getElementById('load-sample').addEventListener('click', () => {
+    const loader = document.getElementById('loader');
+    loader.style.display = 'block'; // показать индикатор
+
     fetch('notes.json')
         .then(response => {
             if (!response.ok) throw new Error('Ошибка загрузки шаблонов');
@@ -74,5 +77,8 @@ document.getElementById('load-sample').addEventListener('click', () => {
         })
         .catch(err => {
             alert('Не удалось загрузить заметки: ' + err.message);
+        })
+        .finally(() => {
+            loader.style.display = 'none'; // скрыть индикатор
         });
 });
