@@ -1,0 +1,114 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+	background: #121212;
+	color: #f1f1f1;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 40px 20px;
+}
+
+.container {
+	width: 100%;
+	max-width: 600px;
+}
+
+h1 {
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 2rem;
+	color: #ffb400;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-bottom: 30px;
+}
+
+textarea {
+	resize: vertical;
+	min-height: 100px;
+	padding: 15px;
+	border-radius: 10px;
+	border: none;
+	background: #1e1e1e;
+	color: white;
+	font-size: 1rem;
+	transition: 0.3s;
+}
+
+	textarea:focus {
+		outline: 2px solid #ffb400;
+	}
+
+button {
+	background: #ffb400;
+	color: #121212;
+	padding: 12px;
+	border: none;
+	border-radius: 10px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background 0.3s;
+}
+
+	button:hover {
+		background: #ffa500;
+	}
+
+#notes-list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.note {
+	background: #1e1e1e;
+	padding: 15px;
+	border-radius: 10px;
+	position: relative;
+	animation: fadeIn 0.4s ease;
+}
+
+	.note .delete-btn {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		background: transparent;
+		color: #ff4d4d;
+		border: none;
+		font-size: 1.2rem;
+		cursor: pointer;
+	}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Адаптив */
+@media (max-width: 600px) {
+	textarea {
+		font-size: 0.9rem;
+	}
+
+	button {
+		font-size: 0.9rem;
+	}
+}
