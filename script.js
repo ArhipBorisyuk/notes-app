@@ -1,6 +1,7 @@
 const noteForm = document.getElementById('note-form');
 const noteInput = document.getElementById('note-input');
 const notesList = document.getElementById('notes-list');
+const loader = document.getElementById('loader');
 
 // Загружаем заметки при запуске
 document.addEventListener('DOMContentLoaded', loadNotes);
@@ -20,18 +21,28 @@ noteForm.addEventListener('submit', function (e) {
 function addNote(text) {
     const note = document.createElement('div');
     note.classList.add('note');
-    note.innerHTML = `
-    <p>${text}</p>
-    <button class="delete-btn" title="Удалить">&times;</button>
-  `;
 
-    // Кнопка удаления
+    const shortText = text.length > 72 ? text.slice(0, 72) + '...' : text;
+    let isExpanded = false;
+
+    note.innerHTML = `
+        <p class="note-text">${shortText}</p>
+        <button class="delete-btn">&times;</button>
+    `;
+
+    const textElem = note.querySelector('.note-text');
+    textElem.style.cursor = 'pointer';
+    textElem.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        textElem.textContent = isExpanded ? text : shortText;
+    });
+
     note.querySelector('.delete-btn').addEventListener('click', () => {
         note.remove();
         deleteNote(text);
     });
 
-    notesList.prepend(note); // сверху новые
+    notesList.prepend(note);
 }
 
 // Сохраняем в localStorage
@@ -60,25 +71,51 @@ function loadNotes() {
     notes.forEach(note => addNote(note));
 }
 
-document.getElementById('load-sample').addEventListener('click', () => {
-    const loader = document.getElementById('loader');
-    loader.style.display = 'block'; // показать индикатор
+// Экспорт заметок
+document.getElementById('export-notes').addEventListener('click', () => {
+    loader.style.display = 'block';
+    setTimeout(() => {
+        const notes = getNotes();
+        const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'notes.json';
+        link.click();
+        loader.style.display = 'none';
+    }, 1000);
+});
 
-    fetch('notes.json')
-        .then(response => {
-            if (!response.ok) throw new Error('Ошибка загрузки шаблонов');
-            return response.json();
-        })
-        .then(data => {
-            data.forEach(note => {
-                addNote(note);
-                saveNote(note);
-            });
-        })
-        .catch(err => {
-            alert('Не удалось загрузить заметки: ' + err.message);
-        })
-        .finally(() => {
-            loader.style.display = 'none'; // скрыть индикатор
-        });
+// Импорт заметок из файла
+document.getElementById('import-notes').addEventListener('click', () => {
+    document.getElementById('import-file').click();
+});
+
+document.getElementById('import-file').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    loader.style.display = 'block';
+
+    reader.onload = function (e) {
+        setTimeout(() => {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (Array.isArray(data)) {
+                    data.forEach(note => {
+                        addNote(note);
+                        saveNote(note);
+                    });
+                } else {
+                    alert('Файл должен содержать массив заметок!');
+                }
+            } catch (err) {
+                alert('Ошибка при импорте файла: ' + err.message);
+            }
+            loader.style.display = 'none';
+            event.target.value = '';
+        }, 1000);
+    };
+
+    reader.readAsText(file);
 });
